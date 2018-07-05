@@ -1,0 +1,30 @@
+.calc-layout {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-gap: 2px;
+  grid-auto-rows: minmax(100px, auto);
+}
+
+.zero-btn {
+  grid-column: span 2;
+}
+
+.app-container {
+  margin: 0 auto;
+  max-width: 300px;
+}
+
+.app-wrapper {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.return {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 30px;
+}
