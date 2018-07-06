@@ -13,7 +13,7 @@
 
 .app-container {
   margin: 0 auto;
-  max-width: 300px;
+  width: 260px;
 }
 
 .app-container button {
@@ -31,5 +31,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 30px;
+  min-height: 70px;
   text-align: right;
+  padding: 5px;
+}
+
+.return-sm {
+  font-size: 20px;
+}
+
+.return-xsm {
+  font-size: 10px;
 }

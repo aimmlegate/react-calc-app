@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
+import cn from 'classnames';
 import './assets/Calculator.css';
 import { calc, isStrFloat } from './calc';
 
@@ -121,10 +122,17 @@ class Calculator extends Component {
     }
   }
   render() {
+    const returnCn = cn({
+      alert: true,
+      'alert-dark': true,
+      return: true,
+      'return-sm': (this.state.screen.length > 12),
+      'return-xsm': (this.state.screen.length > 20),
+    });
     return (
       <div className="app-wrapper">
         <div className="app-container">
-          <div className="alert alert-dark return" role="alert">
+          <div className={returnCn} role="alert">
             {this.state.screen}
           </div>
           <div className="calc-layout">
