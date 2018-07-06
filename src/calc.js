@@ -10,11 +10,11 @@ export const calc = (...params) => {
   const [operand, a, b] = params;
   if (a === null) {
     const parsedB = parseFloat(b);
-    return mathDispatcher[operand](parsedB, parsedB).toPrecision(3).toString();
+    return mathDispatcher[operand](parsedB, parsedB).toString();
   }
   const parsedB = parseFloat(b);
   const parsedA = parseFloat(a);
-  return mathDispatcher[operand](parsedA, parsedB).toPrecision(3).toString();
+  return mathDispatcher[operand](parsedA, parsedB).toString();
 };
 
 export const isStrFloat = str => str.split('').some(el => el === '.');
