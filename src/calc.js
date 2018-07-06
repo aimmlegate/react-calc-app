@@ -2,14 +2,16 @@ const mathDispatcher = {
   '+': (a, b) => a + b,
 };
 
-export default (...params) => {
+export const calc = (...params) => {
   if (params.length === 2) {
     const [operand, a] = params;
-    const parsedA = parseInt(a, 10);
+    const parsedA = parseFloat(a);
     return mathDispatcher[operand](parsedA, parsedA).toString();
   }
   const [operand, a, b] = params;
-  const parsedA = parseInt(a, 10);
-  const parsedB = parseInt(b, 10);
+  const parsedA = parseFloat(a);
+  const parsedB = parseFloat(b);
   return mathDispatcher[operand](parsedA, parsedB).toString();
 };
+
+export const isStrFloat = str => str.split('').some(el => el === '.');

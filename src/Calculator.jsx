@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import './assets/Calculator.css';
-import calc from './calc';
+import { calc, isStrFloat } from './calc';
 
 class Calculator extends Component {
   state = {
@@ -100,6 +100,26 @@ class Calculator extends Component {
         console.error('wtf');
     }
   };
+  pressHandlerDivider = () => {
+
+    switch (this.state.calcState) {
+      case 'READY': {
+        this.setState({
+          screen: (isStrFloat(this.state.screen) ? this.state.screen : `${this.state.screen}.`),
+          calcState: 'INPUT',
+        });
+        break;
+      }
+      case 'INPUT': {
+        this.setState({
+          screen: (isStrFloat(this.state.screen) ? this.state.screen : `${this.state.screen}.`),
+        });
+        break;
+      }
+      default:
+        console.error('wtf');
+    }
+  }
   render() {
     return (
       <div className="app-wrapper">
@@ -161,7 +181,7 @@ class Calculator extends Component {
               onClick={this.pressHandler('0')}>0</Button>
             <Button
               color="secondary"
-              onClick={this.pressHandlerOperand('.')}>.</Button>
+              onClick={this.pressHandlerDivider}>.</Button>
             <Button
               color="warning"
               onClick={this.pressHandlerSumm}>=</Button>
