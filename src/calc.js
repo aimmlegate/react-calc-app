@@ -1,5 +1,6 @@
 const mathDispatcher = {
   '+': (a, b) => a + b,
+  '-': (a, b) => a - b,
 };
 
 export const calc = (...params) => {

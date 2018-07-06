@@ -80,8 +80,8 @@ class Calculator extends Component {
         const result = calc(this.state.operation, this.state.oldBuffer, newBuffer);
         this.setState({
           buffer: newBuffer,
-          oldBuffer: result,
           screen: result,
+          oldBuffer: result,
           calcState: 'READY',
         });
         break;
@@ -129,6 +129,16 @@ class Calculator extends Component {
       case 'INPUT': {
         const newScreen = togglePM(this.state.screen);
         this.setState({ screen: newScreen });
+        break;
+      }
+      case 'OPERATION': {
+        const newScreen = togglePM(this.state.screen);
+        this.setState({
+          buffer: this.state.buffer,
+          screen: newScreen,
+          calcState: 'INPUT',
+          oldBuffer: calc(this.state.operation, this.state.oldBuffer, this.state.buffer),
+        });
         break;
       }
       default:
