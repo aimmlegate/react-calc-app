@@ -15,3 +15,15 @@ export const calc = (...params) => {
 };
 
 export const isStrFloat = str => str.split('').some(el => el === '.');
+
+export const togglePM = (str) => {
+  if (str === '0') {
+    return str;
+  }
+  const isMinus = str.split('').some(el => el === '-');
+  if (isMinus) {
+    return str.split('').filter(el => el !== '-').join('');
+  }
+  return `-${str}`;
+};
+

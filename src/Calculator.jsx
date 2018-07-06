@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import cn from 'classnames';
 import './assets/Calculator.css';
-import { calc, isStrFloat } from './calc';
+import { calc, isStrFloat, togglePM } from './calc';
 
 class Calculator extends Component {
   state = {
@@ -24,7 +24,6 @@ class Calculator extends Component {
       this.setState({ screen: '0', calcState: 'READY' });
     }
   };
-  pressHandlerPM = () => {};
   pressHandlerOperand = val => () => {
     switch (this.state.calcState) {
       case 'INPUT': {
@@ -102,7 +101,6 @@ class Calculator extends Component {
     }
   };
   pressHandlerDivider = () => {
-
     switch (this.state.calcState) {
       case 'READY': {
         this.setState({
@@ -115,6 +113,22 @@ class Calculator extends Component {
         this.setState({
           screen: (isStrFloat(this.state.screen) ? this.state.screen : `${this.state.screen}.`),
         });
+        break;
+      }
+      default:
+        console.error('wtf');
+    }
+  }
+  pressHandlerPM = () => {
+    switch (this.state.calcState) {
+      case 'READY': {
+        const newScreen = togglePM(this.state.screen);
+        this.setState({ screen: newScreen, calcState: (newScreen === '0') ? 'READY' : 'INPUT' });
+        break;
+      }
+      case 'INPUT': {
+        const newScreen = togglePM(this.state.screen);
+        this.setState({ screen: newScreen });
         break;
       }
       default:
@@ -141,7 +155,7 @@ class Calculator extends Component {
               onClick={this.pressHandlerAC}>{(this.state.screen === '0') ? 'AC' : 'C'}</Button>
             <Button
               color="secondary"
-              onClick={this.pressHandlerPM('+/-')}>+/-</Button>
+              onClick={this.pressHandlerPM}>+/-</Button>
             <Button
               color="secondary"
               disabled>%</Button>
