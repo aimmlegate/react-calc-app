@@ -1,17 +1,19 @@
 const mathDispatcher = {
   '+': (a, b) => a + b,
   '-': (a, b) => a - b,
+  x: (a, b) => a * b,
+  '/': (a, b) => a / b,
+  '': a => a,
 };
 
 export const calc = (...params) => {
-  if (params.length === 2) {
-    const [operand, a] = params;
-    const parsedA = parseFloat(a);
-    return mathDispatcher[operand](parsedA, parsedA).toString();
-  }
   const [operand, a, b] = params;
-  const parsedA = parseFloat(a);
+  if (a === null) {
+    const parsedB = parseFloat(b);
+    return mathDispatcher[operand](parsedB, parsedB).toString();
+  }
   const parsedB = parseFloat(b);
+  const parsedA = parseFloat(a);
   return mathDispatcher[operand](parsedA, parsedB).toString();
 };
 

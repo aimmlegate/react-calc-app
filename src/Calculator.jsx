@@ -6,19 +6,21 @@ import { calc, isStrFloat, togglePM } from './calc';
 
 class Calculator extends Component {
   state = {
-    oldBuffer: '0',
+    oldBuffer: null,
     buffer: '0',
     screen: '0',
     calcState: 'READY',
+    operation: '',
   };
 
   pressHandlerAC = () => {
     if (this.state.screen === '0') {
       this.setState({
-        oldBuffer: '0',
+        oldBuffer: null,
         buffer: '0',
         screen: '0',
         calcState: 'READY',
+        operation: '',
       });
     } else {
       this.setState({ screen: '0', calcState: 'READY' });
@@ -26,39 +28,38 @@ class Calculator extends Component {
   };
   pressHandlerOperand = val => () => {
     switch (this.state.calcState) {
+      case 'READY': {
+        this.setState({ operation: val });
+        break;
+      }
       case 'INPUT': {
         const newBuffer = this.state.screen;
-        const result = calc(val, this.state.oldBuffer, newBuffer);
+        const { oldBuffer, operation } = this.state;
+        const result = (oldBuffer === null) ?
+          newBuffer :
+          calc(operation, this.state.oldBuffer, newBuffer);
         this.setState({
+          calcState: 'READY',
+          oldBuffer: result,
           buffer: newBuffer,
           screen: result,
           operation: val,
-          calcState: 'OPERATION',
         });
         break;
       }
-      case 'OPERATION':
-        this.setState({ operation: val });
-        break;
       default:
         console.error('wtf');
     }
   };
   pressHandler = val => () => {
     switch (this.state.calcState) {
-      case 'READY':
-        this.setState({ screen: `${val}`, calcState: 'INPUT' });
+      case 'READY': {
+        this.setState({ calcState: 'INPUT', screen: val });
         break;
-      case 'INPUT':
-        this.setState({ screen: `${this.state.screen}${val}` });
-        break;
-      case 'OPERATION': {
-        this.setState({
-          buffer: this.state.buffer,
-          screen: `${val}`,
-          calcState: 'INPUT',
-          oldBuffer: calc(this.state.operation, this.state.oldBuffer, this.state.buffer),
-        });
+      }
+      case 'INPUT': {
+        const { screen } = this.state;
+        this.setState({ screen: `${screen}${val}` });
         break;
       }
       default:
@@ -66,83 +67,60 @@ class Calculator extends Component {
     }
   };
   pressHandlerSumm = () => {
+    const { operation, oldBuffer, buffer } = this.state;
     switch (this.state.calcState) {
       case 'READY': {
-        const result = calc(this.state.operation, this.state.oldBuffer, this.state.buffer);
-        this.setState({
-          screen: result,
-          oldBuffer: result,
-        });
+        const result = calc(operation, oldBuffer, buffer);
+        this.setState({ screen: result, oldBuffer: result });
         break;
       }
       case 'INPUT': {
         const newBuffer = this.state.screen;
-        const result = calc(this.state.operation, this.state.oldBuffer, newBuffer);
+        const result = calc(operation, oldBuffer, newBuffer);
         this.setState({
-          buffer: newBuffer,
-          screen: result,
-          oldBuffer: result,
           calcState: 'READY',
-        });
-        break;
-      }
-      case 'OPERATION': {
-        const result = (this.state.oldBuffer === '0') ?
-          calc(this.state.operation, this.state.buffer) :
-          calc(this.state.operation, this.state.oldBuffer, this.state.buffer);
-        this.setState({
           screen: result,
           oldBuffer: result,
+          buffer: newBuffer,
         });
         break;
       }
       default:
-        console.error('wtf');
+        console.error('error');
     }
   };
   pressHandlerDivider = () => {
+    const { screen } = this.state;
     switch (this.state.calcState) {
       case 'READY': {
-        this.setState({
-          screen: (isStrFloat(this.state.screen) ? this.state.screen : `${this.state.screen}.`),
-          calcState: 'INPUT',
-        });
+        if (!isStrFloat(screen)) {
+          this.setState({ calcState: 'INPUT', screen: `${screen}.` });
+        }
         break;
       }
       case 'INPUT': {
-        this.setState({
-          screen: (isStrFloat(this.state.screen) ? this.state.screen : `${this.state.screen}.`),
-        });
+        if (!isStrFloat(screen)) {
+          this.setState({ screen: `${screen}.` });
+        }
         break;
       }
       default:
-        console.error('wtf');
+        console.error('error');
     }
   }
   pressHandlerPM = () => {
+    const { screen } = this.state;
     switch (this.state.calcState) {
       case 'READY': {
-        const newScreen = togglePM(this.state.screen);
-        this.setState({ screen: newScreen, calcState: (newScreen === '0') ? 'READY' : 'INPUT' });
+        this.setState({ screen: togglePM(screen), calcState: 'INPUT' });
         break;
       }
       case 'INPUT': {
-        const newScreen = togglePM(this.state.screen);
-        this.setState({ screen: newScreen });
-        break;
-      }
-      case 'OPERATION': {
-        const newScreen = togglePM(this.state.screen);
-        this.setState({
-          buffer: this.state.buffer,
-          screen: newScreen,
-          calcState: 'INPUT',
-          oldBuffer: calc(this.state.operation, this.state.oldBuffer, this.state.buffer),
-        });
+        this.setState({ screen: togglePM(screen) });
         break;
       }
       default:
-        console.error('wtf');
+        console.error('error');
     }
   }
   render() {
