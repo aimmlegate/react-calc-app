@@ -16,6 +16,10 @@
   max-width: 300px;
 }
 
+.app-container button {
+  min-width: 50px;
+}
+
 .app-wrapper {
   display: flex;
   height: 100vh;
@@ -27,4 +31,5 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 30px;
+  text-align: right;
 }
