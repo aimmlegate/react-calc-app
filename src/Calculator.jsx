@@ -48,7 +48,7 @@ class Calculator extends Component {
         break;
       }
       default:
-        console.error('wtf');
+        console.error('error');
     }
   };
   pressHandler = val => () => {
@@ -63,7 +63,7 @@ class Calculator extends Component {
         break;
       }
       default:
-        console.error('wtf');
+        console.error('error');
     }
   };
   pressHandlerSumm = () => {
