@@ -1,13 +1,49 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import './assets/Calculator.css';
+import calc from './calc';
 
 class Calculator extends Component {
-  state = { screen: '0', calcState: 'READY' };
+  state = {
+    oldBuffer: '0',
+    buffer: '0',
+    screen: '0',
+    calcState: 'READY',
+  };
 
-  pressHandlerAC = () => {};
+  pressHandlerAC = () => {
+    if (this.state.screen === '0') {
+      this.setState({
+        oldBuffer: '0',
+        buffer: '0',
+        screen: '0',
+        calcState: 'READY',
+      });
+    } else {
+      this.setState({ screen: '0', calcState: 'READY' });
+    }
+  };
   pressHandlerPM = () => {};
-  pressHandlerOperand = () => {};
+  pressHandlerOperand = val => () => {
+    switch (this.state.calcState) {
+      case 'INPUT': {
+        const newBuffer = this.state.screen;
+        const result = calc(val, this.state.oldBuffer, newBuffer);
+        this.setState({
+          buffer: newBuffer,
+          screen: result,
+          operation: val,
+          calcState: 'OPERATION',
+        });
+        break;
+      }
+      case 'OPERATION':
+        this.setState({ operation: val });
+        break;
+      default:
+        console.error('wtf');
+    }
+  };
   pressHandler = val => () => {
     switch (this.state.calcState) {
       case 'READY':
@@ -16,6 +52,50 @@ class Calculator extends Component {
       case 'INPUT':
         this.setState({ screen: `${this.state.screen}${val}` });
         break;
+      case 'OPERATION': {
+        this.setState({
+          buffer: this.state.buffer,
+          screen: `${val}`,
+          calcState: 'INPUT',
+          oldBuffer: calc(this.state.operation, this.state.oldBuffer, this.state.buffer),
+        });
+        break;
+      }
+      default:
+        console.error('wtf');
+    }
+  };
+  pressHandlerSumm = () => {
+    switch (this.state.calcState) {
+      case 'READY': {
+        const result = calc(this.state.operation, this.state.oldBuffer, this.state.buffer);
+        this.setState({
+          screen: result,
+          oldBuffer: result,
+        });
+        break;
+      }
+      case 'INPUT': {
+        const newBuffer = this.state.screen;
+        const result = calc(this.state.operation, this.state.oldBuffer, newBuffer);
+        this.setState({
+          buffer: newBuffer,
+          oldBuffer: result,
+          screen: result,
+          calcState: 'READY',
+        });
+        break;
+      }
+      case 'OPERATION': {
+        const result = (this.state.oldBuffer === '0') ?
+          calc(this.state.operation, this.state.buffer) :
+          calc(this.state.operation, this.state.oldBuffer, this.state.buffer);
+        this.setState({
+          screen: result,
+          oldBuffer: result,
+        });
+        break;
+      }
       default:
         console.error('wtf');
     }
@@ -30,7 +110,7 @@ class Calculator extends Component {
           <div className="calc-layout">
             <Button
               color="secondary"
-              onClick={this.pressHandlerAC}>{(this.state.calcState === 'INPUT') ? 'C' : 'AC'}</Button>
+              onClick={this.pressHandlerAC}>{(this.state.screen === '0') ? 'AC' : 'C'}</Button>
             <Button
               color="secondary"
               onClick={this.pressHandlerPM('+/-')}>+/-</Button>
